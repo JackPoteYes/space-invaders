@@ -8,6 +8,10 @@ var MY_SHIP = null;
 var ANIMATION_INTERVAL = null;
 var ANIMATION_PERIOD = 20;
 
+var MISSILE_HEIGHT = 30;
+
+var MY_MISSILES = [];
+
 /**
  * INITIALISATION
  */
@@ -54,6 +58,30 @@ function stopMove() {
   clearInterval(ANIMATION_INTERVAL);
 }
 
+function createMyMissile() {
+  const missile = document.createElement("div");
+  ROOT_COMPONENT.appendChild(missile);
+  MY_MISSILES.push(missile);
+  missile.className = "missile";
+  missile.style.left = percent(
+    parseFloat(MY_SHIP.style.left, 10) + SHIP_WIDTH_PERCENTAGE / 2,
+  );
+  missile.style.bottom = percent(MARGIN_BOTTOM_PERCENT + SHIP_WIDTH_PERCENTAGE);
+  return missile;
+}
+
+function shoot() {
+  const missile = createMyMissile();
+  let count = 0;
+  var animShoot = setInterval(() => {
+    if (count++ > 30) {
+      clearInterval(animShoot);
+      missile.parentElement.removeChild(missile);
+    }
+    missile.style.bottom = percent(parseFloat(missile.style.bottom, 10) + 3.5);
+  }, ANIMATION_PERIOD);
+}
+
 /**
  * EVENTS
  */
@@ -71,6 +99,10 @@ document.addEventListener("keydown", event => {
       if (CURRENTLY_MOVING === "left") break;
       stopMove();
       startMove("left");
+      break;
+    // Space
+    case 32:
+      shoot();
       break;
   }
 });

@@ -3,7 +3,7 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  background-color: black;
+  background-color: #222;
   color: rgb(252, 243, 221);
   font-family: "Audiowide", cursive;
 }
@@ -28,8 +28,9 @@ body {
 #root {
   width: 100vw;
   flex: 1;
-  background-color: #222;
+  background-color: black;
   position: relative;
+  overflow: hidden;
 }
 
 #root * {
@@ -39,5 +40,11 @@ body {
 #myShip {
   height: 100px;
   width: 100px;
+  background-color: white;
+}
+
+.missile {
+  width: 3px;
+  height: 30px;
   background-color: white;
 }
