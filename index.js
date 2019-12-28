@@ -12,6 +12,10 @@ var MISSILE_HEIGHT = 30;
 
 var MY_MISSILES = [];
 
+var INVADERS = [];
+var NB_INVADERS_COLUMNS = 11;
+var NB_INVADERS_ROWS = 5;
+
 /**
  * INITIALISATION
  */
@@ -23,6 +27,11 @@ var SHIP_WIDTH_PERCENTAGE = null;
 window.onload = init;
 
 function init() {
+  createMyShip();
+  createInvaders();
+}
+
+function createMyShip() {
   MY_SHIP = document.createElement("div");
   MY_SHIP.id = "myShip";
   MY_SHIP.style.bottom = percent(MARGIN_BOTTOM_PERCENT);
@@ -31,6 +40,24 @@ function init() {
   CANVAS_WIDTH = ROOT_COMPONENT.offsetWidth;
   SHIP_WIDTH = MY_SHIP.offsetWidth;
   SHIP_WIDTH_PERCENTAGE = (SHIP_WIDTH * 100) / CANVAS_WIDTH;
+}
+
+function createInvaders() {
+  const invadersContainer = document.createElement("div");
+  invadersContainer.id = "invadersContainer";
+  ROOT_COMPONENT.appendChild(invadersContainer);
+  for (let col = 0; col < NB_INVADERS_COLUMNS; col++) {
+    const invadersColumn = document.createElement("div");
+    invadersColumn.className = "invadersColumn";
+    invadersContainer.appendChild(invadersColumn);
+    INVADERS.push([]);
+    for (let row = 0; row < NB_INVADERS_ROWS; row++) {
+      const invader = document.createElement("div");
+      invader.className = "invader";
+      INVADERS[col].push(invader);
+      invadersColumn.appendChild(invader);
+    }
+  }
 }
 
 /**
@@ -77,6 +104,7 @@ function shoot() {
     if (count++ > 30) {
       clearInterval(animShoot);
       missile.parentElement.removeChild(missile);
+      MY_MISSILES.splice(MY_MISSILES.indexOf(missile), 1);
     }
     missile.style.bottom = percent(parseFloat(missile.style.bottom, 10) + 3.5);
   }, ANIMATION_PERIOD);
