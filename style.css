@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: rgb(252, 243, 221);
+  font-family: "Audiowide", cursive;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+      supported by Chrome, Opera and Firefox */
+}
+
+#main-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 100%;
+}
+
+#root {
+  width: 100vw;
+  flex: 1;
+  background-color: #222;
+  position: relative;
+}
+
+#root * {
+  position: absolute;
+}
+
+#myShip {
+  height: 100px;
+  width: 100px;
+  background-color: white;
+}
