@@ -64,6 +64,42 @@ function createInvaders() {
     }
   }
   refreshVulnerableInvaders();
+
+  invadersContainer.style.left = pix(
+    ROOT_COMPONENT.offsetWidth / 2 - invadersContainer.offsetWidth / 2,
+  );
+
+  setInvadersMovement();
+
+  function setInvadersMovement() {
+    let move = 1; // | -1
+    setInterval(() => {
+      if (mustTurnLeft()) move = -1;
+      if (mustTurnRight()) move = 1;
+      invadersContainer.style.left = pix(
+        parseFloat(invadersContainer.style.left, 10) + move,
+      );
+    }, ANIMATION_PERIOD * 2);
+
+    function mustTurnLeft() {
+      const invadersContainerLeft = parseFloat(
+        invadersContainer.style.left,
+        10,
+      );
+      return (
+        invadersContainerLeft + invadersContainer.offsetWidth >
+        (ROOT_COMPONENT.offsetWidth * 5) / 6
+      );
+    }
+
+    function mustTurnRight() {
+      const invadersContainerLeft = parseFloat(
+        invadersContainer.style.left,
+        10,
+      );
+      return invadersContainerLeft < ROOT_COMPONENT.offsetWidth / 6;
+    }
+  }
 }
 
 /**
