@@ -18,8 +18,8 @@ var NB_INVADERS_ROWS = 5;
 
 var VULNERABLE_INVADERS = [];
 
-var MISSILE_SPEED = 1; //3.5;
-var MISSILE_LIFE_SPAN = 100; //30;
+var MISSILE_SPEED = 3.5;
+var MISSILE_LIFE_SPAN = 30;
 
 /**
  * INITIALISATION
@@ -133,8 +133,19 @@ function killInvaderIfHit(missile) {
   const targetedInvader = getTargetedInvader(missile);
   if (targetedInvader.length <= 0 || !isHighEnough(missile, targetedInvader[0]))
     return;
+  const targetedInvaderBoundaries = targetedInvader[0].getBoundingClientRect();
+  explodeTargetedInvader(targetedInvader[0]);
   killInvader(targetedInvader[0]);
   return true;
+
+  function explodeTargetedInvader(targetedInvader) {
+    const targetedInvaderBoundaries = targetedInvader.getBoundingClientRect();
+    const explosionLocation = {
+      x: targetedInvaderBoundaries.left + targetedInvader.offsetWidth / 2,
+      y: targetedInvaderBoundaries.bottom + targetedInvader.offsetHeight / 2,
+    };
+    explode(explosionLocation.x, explosionLocation.y);
+  }
 
   function isHighEnough(missile, targetedInvader) {
     return (
@@ -147,7 +158,7 @@ function killInvaderIfHit(missile) {
   function killInvader(invader) {
     INVADERS = INVADERS.map(invaderColumn =>
       invaderColumn.filter(_invader => _invader !== invader),
-    );
+    ).filter(invaderColumn => invaderColumn.length > 0);
     invader.parentElement.removeChild(invader);
     refreshVulnerableInvaders();
   }
