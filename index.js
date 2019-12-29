@@ -16,6 +16,11 @@ var INVADERS = [];
 var NB_INVADERS_COLUMNS = 11;
 var NB_INVADERS_ROWS = 5;
 
+var VULNERABLE_INVADERS = [];
+
+var MISSILE_SPEED = 1; //3.5;
+var MISSILE_LIFE_SPAN = 100; //30;
+
 /**
  * INITIALISATION
  */
@@ -58,6 +63,7 @@ function createInvaders() {
       invadersColumn.appendChild(invader);
     }
   }
+  refreshVulnerableInvaders();
 }
 
 /**
@@ -101,13 +107,61 @@ function shoot() {
   const missile = createMyMissile();
   let count = 0;
   var animShoot = setInterval(() => {
-    if (count++ > 30) {
-      clearInterval(animShoot);
-      missile.parentElement.removeChild(missile);
-      MY_MISSILES.splice(MY_MISSILES.indexOf(missile), 1);
+    if (count++ > MISSILE_LIFE_SPAN) {
+      return stopAnimationAndRemoveMissile(animShoot, missile);
     }
-    missile.style.bottom = percent(parseFloat(missile.style.bottom, 10) + 3.5);
+    if (killInvaderIfHit(missile)) {
+      return stopAnimationAndRemoveMissile(animShoot, missile);
+    }
+    moveMissile(missile);
   }, ANIMATION_PERIOD);
+
+  function stopAnimationAndRemoveMissile(interval, missile) {
+    clearInterval(interval);
+    missile.parentElement.removeChild(missile);
+    MY_MISSILES.splice(MY_MISSILES.indexOf(missile), 1);
+  }
+
+  function moveMissile(missile) {
+    missile.style.bottom = percent(
+      parseFloat(missile.style.bottom, 10) + MISSILE_SPEED,
+    );
+  }
+}
+
+function killInvaderIfHit(missile) {
+  const targetedInvader = getTargetedInvader(missile);
+  if (targetedInvader.length <= 0 || !isHighEnough(missile, targetedInvader[0]))
+    return;
+  killInvader(targetedInvader[0]);
+  return true;
+
+  function isHighEnough(missile, targetedInvader) {
+    return (
+      missile.getBoundingClientRect().bottom <
+      targetedInvader.getBoundingClientRect().bottom +
+        VULNERABLE_INVADERS[0].offsetHeight
+    );
+  }
+
+  function killInvader(invader) {
+    INVADERS = INVADERS.map(invaderColumn =>
+      invaderColumn.filter(_invader => _invader !== invader),
+    );
+    invader.parentElement.removeChild(invader);
+    refreshVulnerableInvaders();
+  }
+}
+
+function getTargetedInvader(missile) {
+  const missileLeft = missile.getBoundingClientRect().left;
+  return VULNERABLE_INVADERS.filter(invader => {
+    const invaderLeft = invader.getBoundingClientRect().left;
+    return (
+      missileLeft >= invaderLeft &&
+      missileLeft <= invaderLeft + invader.offsetWidth
+    );
+  });
 }
 
 /**
@@ -162,4 +216,10 @@ function pix(nb) {
 
 function percent(nb) {
   return `${nb}%`;
+}
+
+function refreshVulnerableInvaders() {
+  VULNERABLE_INVADERS = INVADERS.map(
+    invadersColumn => invadersColumn[invadersColumn.length - 1],
+  );
 }

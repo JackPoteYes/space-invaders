@@ -69,10 +69,6 @@ body {
 .invadersColumn {
   display: inline-flex;
   flex-direction: column;
-  justify-content: center;
-  /* justify-content: center;
-  align-content: stretch;
-  align-items: center; */
 }
 
 .invader {
