@@ -38,8 +38,7 @@ body {
 }
 
 #myShip {
-  /* height: 8vh;
-  width: 8vh; */
+  z-index: 100;
   background-color: white;
 }
 
@@ -87,6 +86,7 @@ body {
 .invader {
   background-color: white;
   flex-shrink: 0;
+  z-index: 100;
 }
 
 /**

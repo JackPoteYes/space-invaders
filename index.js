@@ -44,6 +44,8 @@ var VULNERABLE_INVADERS = [];
 var MISSILE_SPEED = 2.5;
 var MISSILE_LIFE_SPAN = 30;
 
+var INVADER_SHOT_PROBABILITY = 0.2;
+
 var NB_STARS = 200;
 
 var STAR_SHINING_LEVELS = ["warm", "bright", "cold"];
@@ -64,6 +66,73 @@ function init() {
   createMyShip();
   createInvaders();
   createStars();
+  startInvaderMissilesDetonator();
+}
+
+function startInvaderMissilesDetonator() {
+  setInterval(() => {
+    if (Math.random() < INVADER_SHOT_PROBABILITY) randomInvaderShoots();
+  }, 500);
+}
+
+function randomInvaderShoots() {
+  const shootingInvader = getRandomItemFromArray(VULNERABLE_INVADERS);
+  const originalMissileCoordinates = getNewInvaderMissileAbsoluteCoordinates(
+    shootingInvader.item,
+    shootingInvader.index,
+  );
+  const missile = createInvaderMissile(originalMissileCoordinates);
+
+  const test = document.createElement("div");
+  test.className = "test";
+  test.style.top = originalMissileCoordinates.top;
+
+  const test2 = document.createElement("div");
+  test2.className = "test2";
+  test2.style.left = originalMissileCoordinates.left;
+
+  shootInvaderMissile(missile);
+}
+
+function shootInvaderMissile(missile) {
+  let count = 0;
+  var invaderMissileInterval = setInterval(() => {
+    if (count++ > MISSILE_LIFE_SPAN) {
+      missile.parentElement.removeChild(missile);
+      return clearInterval(invaderMissileInterval);
+    }
+    missile.style.top = pix(
+      parseFloat(missile.style.top, 10) + MISSILE_SPEED * 10,
+    );
+  }, ANIMATION_PERIOD);
+}
+
+function createInvaderMissile(absoluteCoordinates) {
+  const missile = document.createElement("div");
+  missile.className = "invaderMissile";
+  missile.style.left = absoluteCoordinates.left;
+  missile.style.top = absoluteCoordinates.top;
+  missile.style.width = MISSILE_DIMENSIONS.width;
+  missile.style.height = MISSILE_DIMENSIONS.height;
+  ROOT_COMPONENT.appendChild(missile);
+  return missile;
+}
+
+function getNewInvaderMissileAbsoluteCoordinates(invader, columnIndex) {
+  const shootingAbsolutePosition = {
+    top: pix(
+      parseFloat(INVADERS_CONTAINER_TOP, 10) +
+        parseFloat(SHIP_DIMENSIONS.height, 10) *
+          (INVADERS[columnIndex].length - 1) +
+        parseFloat(INVADER_MARGIN, 10) * (INVADERS[columnIndex].length * 2 - 1),
+    ),
+    left: pix(
+      invader.getBoundingClientRect().left +
+        parseFloat(SHIP_DIMENSIONS.width, 10) / 2 -
+        parseFloat(MISSILE_DIMENSIONS.width, 10) / 2,
+    ),
+  };
+  return shootingAbsolutePosition;
 }
 
 function createStars() {
@@ -73,11 +142,11 @@ function createStars() {
     coordY = Math.floor(Math.random() * 100);
 
     const star = document.createElement("div");
-    star.className = `star ${getRandomItemFromArray(
-      STAR_BLINKING_SPEEDS,
-    )} ${getRandomItemFromArray(STAR_SIZES)} ${getRandomItemFromArray(
-      STAR_SHINING_LEVELS,
-    )}`;
+    star.className = `star ${
+      getRandomItemFromArray(STAR_BLINKING_SPEEDS).item
+    } ${getRandomItemFromArray(STAR_SIZES).item} ${
+      getRandomItemFromArray(STAR_SHINING_LEVELS).item
+    }`;
     star.style.left = percent(coordX);
     star.style.top = percent(coordY);
     ROOT_COMPONENT.appendChild(star);
@@ -322,7 +391,8 @@ function percent(nb) {
 }
 
 function getRandomItemFromArray(array) {
-  return array[Math.floor(Math.random() * array.length)];
+  const index = Math.floor(Math.random() * array.length);
+  return { item: array[index], index: index };
 }
 
 function refreshVulnerableInvaders() {
