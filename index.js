@@ -1,4 +1,27 @@
 var ROOT_COMPONENT = document.getElementById("game-root");
+
+/**
+ * DIMENSIONS
+ */
+
+var SHIP_DIMENSIONS = {
+  height: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
+  width: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
+};
+
+var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.9) / 100);
+
+var MISSILE_DIMENSIONS = {
+  height: SHIP_DIMENSIONS.height,
+  width: pix((ROOT_COMPONENT.offsetWidth * 0.2) / 100),
+};
+
+var INVADERS_CONTAINER_TOP = pix((ROOT_COMPONENT.offsetHeight * 2) / 100);
+
+/**
+ * OTHER
+ */
+
 var MARGIN_BOTTOM_PERCENT = 10;
 var MOVE_SPEED = 1;
 
@@ -18,7 +41,7 @@ var NB_INVADERS_ROWS = 5;
 
 var VULNERABLE_INVADERS = [];
 
-var MISSILE_SPEED = 3.5;
+var MISSILE_SPEED = 2.5;
 var MISSILE_LIFE_SPAN = 30;
 
 var NB_STARS = 200;
@@ -66,6 +89,8 @@ function createMyShip() {
   MY_SHIP.id = "myShip";
   MY_SHIP.style.bottom = percent(MARGIN_BOTTOM_PERCENT);
   MY_SHIP.style.left = percent(0);
+  MY_SHIP.style.height = SHIP_DIMENSIONS.width;
+  MY_SHIP.style.width = SHIP_DIMENSIONS.height;
   ROOT_COMPONENT.appendChild(MY_SHIP);
   CANVAS_WIDTH = ROOT_COMPONENT.offsetWidth;
   SHIP_WIDTH = MY_SHIP.offsetWidth;
@@ -75,6 +100,7 @@ function createMyShip() {
 function createInvaders() {
   const invadersContainer = document.createElement("div");
   invadersContainer.id = "invadersContainer";
+  invadersContainer.style.top = INVADERS_CONTAINER_TOP;
   ROOT_COMPONENT.appendChild(invadersContainer);
   for (let col = 0; col < NB_INVADERS_COLUMNS; col++) {
     const invadersColumn = document.createElement("div");
@@ -84,6 +110,9 @@ function createInvaders() {
     for (let row = 0; row < NB_INVADERS_ROWS; row++) {
       const invader = document.createElement("div");
       invader.className = "invader";
+      invader.style.width = SHIP_DIMENSIONS.width;
+      invader.style.height = SHIP_DIMENSIONS.height;
+      invader.style.margin = INVADER_MARGIN;
       INVADERS[col].push(invader);
       invadersColumn.appendChild(invader);
     }
@@ -160,6 +189,8 @@ function createMyMissile() {
   missile.style.left = percent(
     parseFloat(MY_SHIP.style.left, 10) + SHIP_WIDTH_PERCENTAGE / 2,
   );
+  missile.style.width = MISSILE_DIMENSIONS.width;
+  missile.style.height = MISSILE_DIMENSIONS.height;
   missile.style.bottom = percent(MARGIN_BOTTOM_PERCENT + SHIP_WIDTH_PERCENTAGE);
   return missile;
 }
