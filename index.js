@@ -41,10 +41,10 @@ var NB_INVADERS_ROWS = 5;
 
 var VULNERABLE_INVADERS = [];
 
-var MISSILE_SPEED = 2.5;
-var MISSILE_LIFE_SPAN = 30;
+var MISSILE_SPEED = 2;
+var MISSILE_LIFE_SPAN = 70;
 
-var INVADER_SHOT_PROBABILITY = 0.2;
+var INVADER_SHOT_PROBABILITY = 0.5;
 
 var NB_STARS = 200;
 
@@ -83,14 +83,6 @@ function randomInvaderShoots() {
   );
   const missile = createInvaderMissile(originalMissileCoordinates);
 
-  const test = document.createElement("div");
-  test.className = "test";
-  test.style.top = originalMissileCoordinates.top;
-
-  const test2 = document.createElement("div");
-  test2.className = "test2";
-  test2.style.left = originalMissileCoordinates.left;
-
   shootInvaderMissile(missile);
 }
 
@@ -101,10 +93,24 @@ function shootInvaderMissile(missile) {
       missile.parentElement.removeChild(missile);
       return clearInterval(invaderMissileInterval);
     }
+    if (hitMyShip(missile)) {
+      explosionOnElement(MY_SHIP);
+    }
     missile.style.top = pix(
-      parseFloat(missile.style.top, 10) + MISSILE_SPEED * 10,
+      parseFloat(missile.style.top, 10) + MISSILE_SPEED * 6,
     );
   }, ANIMATION_PERIOD);
+}
+
+function hitMyShip(missile) {
+  const missileRect = missile.getBoundingClientRect();
+  const myShipRect = MY_SHIP.getBoundingClientRect();
+  return (
+    missileRect.right > myShipRect.left &&
+    missileRect.left < myShipRect.right &&
+    missileRect.bottom > myShipRect.top &&
+    missileRect.top < myShipRect.bottom
+  );
 }
 
 function createInvaderMissile(absoluteCoordinates) {
@@ -290,23 +296,22 @@ function shootMyMissile() {
   }
 }
 
+function explosionOnElement(element) {
+  const elementBoundaries = element.getBoundingClientRect();
+  const explosionLocation = {
+    x: elementBoundaries.left + element.offsetWidth / 2,
+    y: elementBoundaries.bottom + element.offsetHeight / 2,
+  };
+  explode(explosionLocation.x, explosionLocation.y);
+}
+
 function killInvaderIfHit(missile) {
   const targetedInvader = getTargetedInvader(missile);
   if (targetedInvader.length <= 0 || !isHighEnough(missile, targetedInvader[0]))
     return;
-  const targetedInvaderBoundaries = targetedInvader[0].getBoundingClientRect();
-  explodeTargetedInvader(targetedInvader[0]);
+  explosionOnElement(targetedInvader[0]);
   killInvader(targetedInvader[0]);
   return true;
-
-  function explodeTargetedInvader(targetedInvader) {
-    const targetedInvaderBoundaries = targetedInvader.getBoundingClientRect();
-    const explosionLocation = {
-      x: targetedInvaderBoundaries.left + targetedInvader.offsetWidth / 2,
-      y: targetedInvaderBoundaries.bottom + targetedInvader.offsetHeight / 2,
-    };
-    explode(explosionLocation.x, explosionLocation.y);
-  }
 
   function isHighEnough(missile, targetedInvader) {
     return (
