@@ -43,10 +43,29 @@ body {
   background-color: white;
 }
 
+.test {
+  width: 100vw;
+  height: 2px;
+  background-color: blue;
+}
+
 .missile {
   width: 3px;
   height: 30px;
+}
+
+.myMissile {
   background-color: #ffadf4;
+  -webkit-box-shadow: 0px 0px 15px 3px rgba(255, 173, 244, 0.65);
+  -moz-box-shadow: 0px 0px 15px 3px rgba(255, 173, 244, 0.65);
+  box-shadow: 0px 0px 15px 3px rgba(255, 173, 244, 0.65);
+}
+
+.invaderMissile {
+  background-color: #ff3721;
+  -webkit-box-shadow: 0px 0px 15px 3px rgba(255, 55, 33, 1);
+  -moz-box-shadow: 0px 0px 15px 3px rgba(255, 55, 33, 1);
+  box-shadow: 0px 0px 15px 3px rgba(255, 55, 33, 1);
 }
 
 #invadersContainer {
@@ -75,4 +94,75 @@ body {
   background-color: white;
   margin: 1vw;
   flex-shrink: 0;
+}
+
+/**
+* Stars
+*/
+
+.star {
+  animation-name: starAnimation;
+  -webkit-animation-name: starAnimation; /* Safari 4.0 - 8.0 */
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+
+.fast {
+  animation-duration: 2s;
+}
+
+.medium {
+  animation-duration: 4s;
+}
+
+.slow {
+  animation-duration: 8s;
+}
+
+.big {
+  width: 3px;
+  height: 3px;
+}
+
+.medium {
+  width: 2px;
+  height: 2px;
+}
+
+.small {
+  width: 1px;
+  height: 1px;
+}
+
+.warm {
+  background-color: #fae6ac;
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(250, 230, 172, 1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(250, 230, 172, 1);
+  box-shadow: 0px 0px 7px 1px rgba(250, 230, 172, 1);
+}
+
+.bright {
+  background-color: #fffbf0;
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(255, 251, 240, 1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(255, 251, 240, 1);
+  box-shadow: 0px 0px 7px 1px rgba(255, 251, 240, 1);
+}
+
+.cold {
+  background-color: #f1c3fa;
+  -webkit-box-shadow: 0px 0px 10px 3px rgba(228, 129, 247, 0.75);
+  -moz-box-shadow: 0px 0px 10px 3px rgba(228, 129, 247, 0.75);
+  box-shadow: 0px 0px 10px 3px rgba(228, 129, 247, 0.75);
+}
+
+@keyframes starAnimation {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.7;
+  }
 }

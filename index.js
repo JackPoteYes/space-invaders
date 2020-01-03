@@ -21,6 +21,12 @@ var VULNERABLE_INVADERS = [];
 var MISSILE_SPEED = 3.5;
 var MISSILE_LIFE_SPAN = 30;
 
+var NB_STARS = 200;
+
+var STAR_SHINING_LEVELS = ["warm", "bright", "cold"];
+var STAR_SIZES = ["small", "medium", "big"];
+var STAR_BLINKING_SPEEDS = ["slow", "medium", "fast"];
+
 /**
  * INITIALISATION
  */
@@ -34,6 +40,25 @@ window.onload = init;
 function init() {
   createMyShip();
   createInvaders();
+  createStars();
+}
+
+function createStars() {
+  let [coordX, coordY] = [-1, -1];
+  for (let i = 0; i < NB_STARS; i++) {
+    coordX = Math.floor(Math.random() * 100);
+    coordY = Math.floor(Math.random() * 100);
+
+    const star = document.createElement("div");
+    star.className = `star ${getRandomItemFromArray(
+      STAR_BLINKING_SPEEDS,
+    )} ${getRandomItemFromArray(STAR_SIZES)} ${getRandomItemFromArray(
+      STAR_SHINING_LEVELS,
+    )}`;
+    star.style.left = percent(coordX);
+    star.style.top = percent(coordY);
+    ROOT_COMPONENT.appendChild(star);
+  }
 }
 
 function createMyShip() {
@@ -131,7 +156,7 @@ function createMyMissile() {
   const missile = document.createElement("div");
   ROOT_COMPONENT.appendChild(missile);
   MY_MISSILES.push(missile);
-  missile.className = "missile";
+  missile.className = "missile myMissile";
   missile.style.left = percent(
     parseFloat(MY_SHIP.style.left, 10) + SHIP_WIDTH_PERCENTAGE / 2,
   );
@@ -139,7 +164,7 @@ function createMyMissile() {
   return missile;
 }
 
-function shoot() {
+function shootMyMissile() {
   const missile = createMyMissile();
   let count = 0;
   var animShoot = setInterval(() => {
@@ -231,7 +256,7 @@ document.addEventListener("keydown", event => {
       break;
     // Space
     case 32:
-      shoot();
+      shootMyMissile();
       break;
   }
 });
@@ -263,6 +288,10 @@ function pix(nb) {
 
 function percent(nb) {
   return `${nb}%`;
+}
+
+function getRandomItemFromArray(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
 
 function refreshVulnerableInvaders() {
