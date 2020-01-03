@@ -1,4 +1,4 @@
-var ROOT_COMPONENT = document.getElementById("root");
+var ROOT_COMPONENT = document.getElementById("game-root");
 var MARGIN_BOTTOM_PERCENT = 10;
 var MOVE_SPEED = 1;
 

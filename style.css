@@ -18,14 +18,14 @@ body {
       supported by Chrome, Opera and Firefox */
 }
 
-#main-container {
+#document-container {
   display: flex;
   flex-direction: column;
   text-align: center;
   height: 100%;
 }
 
-#root {
+#game-root {
   width: 100vw;
   flex: 1;
   background-color: black;
@@ -33,7 +33,7 @@ body {
   overflow: hidden;
 }
 
-#root * {
+#game-root * {
   position: absolute;
 }
 
