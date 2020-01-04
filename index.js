@@ -54,6 +54,9 @@ var STAR_SHINING_LEVELS = ["warm", "bright", "cold"];
 var STAR_SIZES = ["small", "medium", "big"];
 var STAR_BLINKING_SPEEDS = ["slow", "medium", "fast"];
 
+var CAN_SHOOT = true;
+var SHIP_TIME_FREEZE = 1500;
+
 /**
  * INITIALISATION
  */
@@ -96,6 +99,7 @@ function shootInvaderMissile(missile) {
       return clearInterval(invaderMissileInterval);
     }
     if (hitMyShip(missile)) {
+      freezeMyCanonForAWhile();
       explosionOnElement(MY_SHIP);
       MY_SHIP.style.animationDuration = `${MY_SHIP_HIT_ANIMATION_DURATION_SECONDS}s`;
       MY_SHIP.className = "myShip triggerMyShipHitAnimation";
@@ -107,6 +111,13 @@ function shootInvaderMissile(missile) {
       parseFloat(missile.style.top, 10) + MISSILE_SPEED * 6,
     );
   }, ANIMATION_PERIOD);
+}
+
+function freezeMyCanonForAWhile() {
+  CAN_SHOOT = false;
+  setTimeout(() => {
+    CAN_SHOOT = true;
+  }, SHIP_TIME_FREEZE);
 }
 
 function hitMyShip(missile) {
@@ -368,7 +379,7 @@ document.addEventListener("keydown", event => {
       break;
     // Space
     case 32:
-      shootMyMissile();
+      if (CAN_SHOOT) shootMyMissile();
       break;
   }
 });
