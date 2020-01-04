@@ -9,7 +9,7 @@ var SHIP_DIMENSIONS = {
   width: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
 };
 
-var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.9) / 100);
+var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.4) / 100);
 
 var MISSILE_DIMENSIONS = {
   height: SHIP_DIMENSIONS.height,
@@ -21,6 +21,8 @@ var INVADERS_CONTAINER_TOP = pix((ROOT_COMPONENT.offsetHeight * 2) / 100);
 /**
  * OTHER
  */
+
+var MY_SHIP_HIT_ANIMATION_DURATION_SECONDS = 0.7;
 
 var MARGIN_BOTTOM_PERCENT = 10;
 var MOVE_SPEED = 1;
@@ -51,6 +53,9 @@ var NB_STARS = 200;
 var STAR_SHINING_LEVELS = ["warm", "bright", "cold"];
 var STAR_SIZES = ["small", "medium", "big"];
 var STAR_BLINKING_SPEEDS = ["slow", "medium", "fast"];
+
+var CAN_SHOOT = true;
+var SHIP_TIME_FREEZE = 1500;
 
 /**
  * INITIALISATION
@@ -94,12 +99,25 @@ function shootInvaderMissile(missile) {
       return clearInterval(invaderMissileInterval);
     }
     if (hitMyShip(missile)) {
+      freezeMyCanonForAWhile();
       explosionOnElement(MY_SHIP);
+      MY_SHIP.style.animationDuration = `${MY_SHIP_HIT_ANIMATION_DURATION_SECONDS}s`;
+      MY_SHIP.className = "myShip triggerMyShipHitAnimation";
+      setTimeout(() => {
+        MY_SHIP.className = "myShip";
+      }, MY_SHIP_HIT_ANIMATION_DURATION_SECONDS * 1000);
     }
     missile.style.top = pix(
       parseFloat(missile.style.top, 10) + MISSILE_SPEED * 6,
     );
   }, ANIMATION_PERIOD);
+}
+
+function freezeMyCanonForAWhile() {
+  CAN_SHOOT = false;
+  setTimeout(() => {
+    CAN_SHOOT = true;
+  }, SHIP_TIME_FREEZE);
 }
 
 function hitMyShip(missile) {
@@ -361,7 +379,7 @@ document.addEventListener("keydown", event => {
       break;
     // Space
     case 32:
-      shootMyMissile();
+      if (CAN_SHOOT) shootMyMissile();
       break;
   }
 });
