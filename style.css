@@ -152,6 +152,9 @@ body {
   animation-name: myShipHitAnimation;
   animation-iteration-count: 1;
   animation-timing-function: ease-out;
+  /* Some extra style for the ship to look weak at the end */
+  opacity: 0.3;
+  border: 2px solid white;
 }
 
 @keyframes starAnimation {
@@ -173,6 +176,7 @@ body {
     -webkit-box-shadow: 0px 0px 73px 24px rgba(255, 25, 41, 1);
     -moz-box-shadow: 0px 0px 73px 24px rgba(255, 25, 41, 1);
     box-shadow: 0px 0px 73px 24px rgba(255, 25, 41, 1);
+    opacity: 1;
   }
   100% {
     transform: rotate(540deg);

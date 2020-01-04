@@ -54,7 +54,7 @@ var STAR_SHINING_LEVELS = ["warm", "bright", "cold"];
 var STAR_SIZES = ["small", "medium", "big"];
 var STAR_BLINKING_SPEEDS = ["slow", "medium", "fast"];
 
-var CAN_SHOOT = true;
+var SHIP_IS_FROZEN = false;
 var SHIP_TIME_FREEZE = 1500;
 
 /**
@@ -98,14 +98,11 @@ function shootInvaderMissile(missile) {
       missile.parentElement.removeChild(missile);
       return clearInterval(invaderMissileInterval);
     }
-    if (hitMyShip(missile)) {
-      freezeMyCanonForAWhile();
-      explosionOnElement(MY_SHIP);
+    if (hitMyShip(missile) && !SHIP_IS_FROZEN) {
       MY_SHIP.style.animationDuration = `${MY_SHIP_HIT_ANIMATION_DURATION_SECONDS}s`;
       MY_SHIP.className = "myShip triggerMyShipHitAnimation";
-      setTimeout(() => {
-        MY_SHIP.className = "myShip";
-      }, MY_SHIP_HIT_ANIMATION_DURATION_SECONDS * 1000);
+      explosionOnElement(MY_SHIP);
+      takeTheHit();
     }
     missile.style.top = pix(
       parseFloat(missile.style.top, 10) + MISSILE_SPEED * 6,
@@ -113,10 +110,11 @@ function shootInvaderMissile(missile) {
   }, ANIMATION_PERIOD);
 }
 
-function freezeMyCanonForAWhile() {
-  CAN_SHOOT = false;
+function takeTheHit() {
+  SHIP_IS_FROZEN = true;
   setTimeout(() => {
-    CAN_SHOOT = true;
+    MY_SHIP.className = "myShip";
+    SHIP_IS_FROZEN = false;
   }, SHIP_TIME_FREEZE);
 }
 
@@ -379,7 +377,7 @@ document.addEventListener("keydown", event => {
       break;
     // Space
     case 32:
-      if (CAN_SHOOT) shootMyMissile();
+      if (!SHIP_IS_FROZEN) shootMyMissile();
       break;
   }
 });
