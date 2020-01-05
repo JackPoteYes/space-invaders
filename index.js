@@ -9,7 +9,7 @@ var SHIP_DIMENSIONS = {
   width: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
 };
 
-var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.4) / 100);
+var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.7) / 100);
 
 var MISSILE_DIMENSIONS = {
   height: SHIP_DIMENSIONS.height,
@@ -342,19 +342,19 @@ function explosionOnElement(element) {
 
 function killInvaderIfHit(missile) {
   const targetedInvader = getTargetedInvader(missile);
-  if (targetedInvader.length <= 0 || !isHighEnough(missile, targetedInvader[0]))
-    return;
-  explosionOnElement(targetedInvader[0]);
-  killInvader(targetedInvader[0]);
+  if (!targetedInvader || !isHighEnough(missile, targetedInvader)) return;
+  explosionOnElement(targetedInvader);
+  killInvader(targetedInvader);
   SCORE++;
   setScoreOnDisplay(SCORE);
   return true;
 
   function isHighEnough(missile, targetedInvader) {
+    const missileBoundingRect = missile.getBoundingClientRect();
+    const targetedInvaderBoundingRect = targetedInvader.getBoundingClientRect();
     return (
-      missile.getBoundingClientRect().bottom <
-      targetedInvader.getBoundingClientRect().bottom +
-        VULNERABLE_INVADERS[0].offsetHeight
+      missileBoundingRect.top < targetedInvaderBoundingRect.bottom &&
+      missileBoundingRect.bottom > targetedInvaderBoundingRect.top
     );
   }
 
@@ -374,13 +374,14 @@ function setScoreOnDisplay(nb) {
 
 function getTargetedInvader(missile) {
   const missileLeft = missile.getBoundingClientRect().left;
-  return VULNERABLE_INVADERS.filter(invader => {
+  const targetedInvaders = VULNERABLE_INVADERS.filter(invader => {
     const invaderLeft = invader.getBoundingClientRect().left;
     return (
       missileLeft >= invaderLeft &&
       missileLeft <= invaderLeft + invader.offsetWidth
     );
   });
+  return targetedInvaders.length === 1 ? targetedInvaders[0] : null;
 }
 
 /**
