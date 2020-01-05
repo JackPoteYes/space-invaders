@@ -89,6 +89,13 @@ body {
   z-index: 100;
 }
 
+#remaining-lives {
+  left: 10px;
+  top: 10px;
+  font-size: 32px;
+  color: rgb(252, 243, 221);
+}
+
 /**
 * Stars
 */

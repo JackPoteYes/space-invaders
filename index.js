@@ -57,6 +57,8 @@ var STAR_BLINKING_SPEEDS = ["slow", "medium", "fast"];
 var SHIP_IS_FROZEN = false;
 var SHIP_TIME_FREEZE = 1500;
 
+var REMAINING_LIVES = 3;
+
 /**
  * INITIALISATION
  */
@@ -99,9 +101,6 @@ function shootInvaderMissile(missile) {
       return clearInterval(invaderMissileInterval);
     }
     if (hitMyShip(missile) && !SHIP_IS_FROZEN) {
-      MY_SHIP.style.animationDuration = `${MY_SHIP_HIT_ANIMATION_DURATION_SECONDS}s`;
-      MY_SHIP.className = "myShip triggerMyShipHitAnimation";
-      explosionOnElement(MY_SHIP);
       takeTheHit();
     }
     missile.style.top = pix(
@@ -111,11 +110,29 @@ function shootInvaderMissile(missile) {
 }
 
 function takeTheHit() {
+  MY_SHIP.style.animationDuration = `${MY_SHIP_HIT_ANIMATION_DURATION_SECONDS}s`;
+  MY_SHIP.className = "myShip triggerMyShipHitAnimation";
+  explosionOnElement(MY_SHIP);
   SHIP_IS_FROZEN = true;
+  let blinkState = true;
+  const blinkLive = setInterval(() => {
+    const nbHearts = REMAINING_LIVES - (blinkState ? 1 : 0);
+    setRemainingLivesOnScreen(nbHearts);
+    blinkState = !blinkState;
+  }, 100);
   setTimeout(() => {
+    clearInterval(blinkLive);
     MY_SHIP.className = "myShip";
     SHIP_IS_FROZEN = false;
+    REMAINING_LIVES--;
+    setRemainingLivesOnScreen(REMAINING_LIVES);
   }, SHIP_TIME_FREEZE);
+}
+
+function setRemainingLivesOnScreen(nb) {
+  const remainingLivesElement = document.getElementById("remaining-lives");
+  const heartsString = [...Array(nb).keys()].map(_ => "\u2665").join(" ");
+  remainingLivesElement.innerText = `Lives: ${heartsString}`;
 }
 
 function hitMyShip(missile) {
