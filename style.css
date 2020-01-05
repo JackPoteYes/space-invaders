@@ -89,11 +89,18 @@ body {
   z-index: 100;
 }
 
-#remaining-lives {
-  left: 10px;
-  top: 10px;
-  font-size: 32px;
+.legend {
+  font-size: 22px;
   color: rgb(252, 243, 221);
+  top: 10px;
+}
+
+#remaining-lives {
+  left: 25px;
+}
+
+#score {
+  right: 25px;
 }
 
 /**

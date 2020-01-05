@@ -59,6 +59,8 @@ var SHIP_TIME_FREEZE = 1500;
 
 var REMAINING_LIVES = 3;
 
+var SCORE = 0;
+
 /**
  * INITIALISATION
  */
@@ -344,6 +346,8 @@ function killInvaderIfHit(missile) {
     return;
   explosionOnElement(targetedInvader[0]);
   killInvader(targetedInvader[0]);
+  SCORE++;
+  setScoreOnDisplay(SCORE);
   return true;
 
   function isHighEnough(missile, targetedInvader) {
@@ -361,6 +365,11 @@ function killInvaderIfHit(missile) {
     invader.parentElement.removeChild(invader);
     refreshVulnerableInvaders();
   }
+}
+
+function setScoreOnDisplay(nb) {
+  const scoreElement = document.getElementById("score");
+  scoreElement.innerText = `Score ${nb}`;
 }
 
 function getTargetedInvader(missile) {
