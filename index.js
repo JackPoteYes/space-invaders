@@ -2,21 +2,22 @@ var ROOT_COMPONENT = document.getElementById("game-root");
 
 /**
  * DIMENSIONS
+ * ALL IN PIXELS, KEPT AS Number TYPE
  */
 
 var SHIP_DIMENSIONS = {
-  height: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
-  width: pix((ROOT_COMPONENT.offsetWidth * 2) / 100),
+  height: (ROOT_COMPONENT.offsetWidth * 2) / 100,
+  width: (ROOT_COMPONENT.offsetWidth * 2) / 100,
 };
 
-var INVADER_MARGIN = pix((ROOT_COMPONENT.offsetWidth * 0.7) / 100);
+var INVADER_MARGIN = (ROOT_COMPONENT.offsetWidth * 0.7) / 100;
 
 var MISSILE_DIMENSIONS = {
   height: SHIP_DIMENSIONS.height,
-  width: pix((ROOT_COMPONENT.offsetWidth * 0.2) / 100),
+  width: (ROOT_COMPONENT.offsetWidth * 0.2) / 100,
 };
 
-var INVADERS_CONTAINER_TOP = pix((ROOT_COMPONENT.offsetHeight * 2) / 100);
+var INVADERS_CONTAINER_TOP = (ROOT_COMPONENT.offsetHeight * 5) / 100;
 
 /**
  * OTHER
@@ -153,24 +154,24 @@ function createInvaderMissile(absoluteCoordinates) {
   missile.className = "invaderMissile";
   missile.style.left = absoluteCoordinates.left;
   missile.style.top = absoluteCoordinates.top;
-  missile.style.width = MISSILE_DIMENSIONS.width;
-  missile.style.height = MISSILE_DIMENSIONS.height;
+  missile.style.width = pix(MISSILE_DIMENSIONS.width);
+  missile.style.height = pix(MISSILE_DIMENSIONS.height);
   ROOT_COMPONENT.appendChild(missile);
   return missile;
 }
 
 function getNewInvaderMissileAbsoluteCoordinates(invader, columnIndex) {
+  const invadersContainer = document.getElementById("invadersContainer");
   const shootingAbsolutePosition = {
     top: pix(
-      parseFloat(INVADERS_CONTAINER_TOP, 10) +
-        parseFloat(SHIP_DIMENSIONS.height, 10) *
-          (INVADERS[columnIndex].length - 1) +
-        parseFloat(INVADER_MARGIN, 10) * (INVADERS[columnIndex].length * 2 - 1),
+      parseFloat(invadersContainer.style.top, 10) +
+        SHIP_DIMENSIONS.height * (INVADERS[columnIndex].length - 1) +
+        INVADER_MARGIN * (INVADERS[columnIndex].length * 2 - 1),
     ),
     left: pix(
       invader.getBoundingClientRect().left +
-        parseFloat(SHIP_DIMENSIONS.width, 10) / 2 -
-        parseFloat(MISSILE_DIMENSIONS.width, 10) / 2,
+        SHIP_DIMENSIONS.width / 2 -
+        MISSILE_DIMENSIONS.width / 2,
     ),
   };
   return shootingAbsolutePosition;
@@ -199,8 +200,8 @@ function createMyShip() {
   MY_SHIP.id = "myShip";
   MY_SHIP.style.bottom = percent(MARGIN_BOTTOM_PERCENT);
   MY_SHIP.style.left = percent(0);
-  MY_SHIP.style.height = SHIP_DIMENSIONS.width;
-  MY_SHIP.style.width = SHIP_DIMENSIONS.height;
+  MY_SHIP.style.height = pix(SHIP_DIMENSIONS.width);
+  MY_SHIP.style.width = pix(SHIP_DIMENSIONS.height);
   ROOT_COMPONENT.appendChild(MY_SHIP);
   CANVAS_WIDTH = ROOT_COMPONENT.offsetWidth;
   SHIP_WIDTH = MY_SHIP.offsetWidth;
@@ -210,7 +211,7 @@ function createMyShip() {
 function createInvaders() {
   const invadersContainer = document.createElement("div");
   invadersContainer.id = "invadersContainer";
-  invadersContainer.style.top = INVADERS_CONTAINER_TOP;
+  invadersContainer.style.top = pix(INVADERS_CONTAINER_TOP);
   ROOT_COMPONENT.appendChild(invadersContainer);
   for (let col = 0; col < NB_INVADERS_COLUMNS; col++) {
     const invadersColumn = document.createElement("div");
@@ -220,9 +221,9 @@ function createInvaders() {
     for (let row = 0; row < NB_INVADERS_ROWS; row++) {
       const invader = document.createElement("div");
       invader.className = "invader";
-      invader.style.width = SHIP_DIMENSIONS.width;
-      invader.style.height = SHIP_DIMENSIONS.height;
-      invader.style.margin = INVADER_MARGIN;
+      invader.style.width = pix(SHIP_DIMENSIONS.width);
+      invader.style.height = pix(SHIP_DIMENSIONS.height);
+      invader.style.margin = pix(INVADER_MARGIN);
       INVADERS[col].push(invader);
       invadersColumn.appendChild(invader);
     }
@@ -238,12 +239,18 @@ function createInvaders() {
   function setInvadersMovement() {
     let move = 1; // | -1
     setInterval(() => {
-      if (mustTurnLeft()) move = -1;
-      if (mustTurnRight()) move = 1;
+      if (mustTurnLeft()) {
+        move = -1;
+        moveDown();
+      }
+      if (mustTurnRight()) {
+        move = 1;
+        moveDown();
+      }
       invadersContainer.style.left = pix(
         parseFloat(invadersContainer.style.left, 10) + move,
       );
-    }, ANIMATION_PERIOD * 2);
+    }, ANIMATION_PERIOD * 1);
 
     function mustTurnLeft() {
       const invadersContainerLeft = parseFloat(
@@ -264,6 +271,24 @@ function createInvaders() {
       return invadersContainerLeft < ROOT_COMPONENT.offsetWidth / 6;
     }
   }
+}
+
+function moveDown() {
+  const invadersContainer = document.getElementById("invadersContainer");
+  invadersContainer.style.top = pix(
+    parseFloat(invadersContainer.style.top, 10) +
+      SHIP_DIMENSIONS.height +
+      INVADER_MARGIN,
+  );
+  if (
+    invadersContainer.getBoundingClientRect().bottom >=
+    MY_SHIP.getBoundingClientRect().top
+  )
+    loose();
+}
+
+function loose() {
+  // pass
 }
 
 /**
@@ -299,8 +324,8 @@ function createMyMissile() {
   missile.style.left = percent(
     parseFloat(MY_SHIP.style.left, 10) + SHIP_WIDTH_PERCENTAGE / 2,
   );
-  missile.style.width = MISSILE_DIMENSIONS.width;
-  missile.style.height = MISSILE_DIMENSIONS.height;
+  missile.style.width = pix(MISSILE_DIMENSIONS.width);
+  missile.style.height = pix(MISSILE_DIMENSIONS.height);
   missile.style.bottom = percent(MARGIN_BOTTOM_PERCENT + SHIP_WIDTH_PERCENTAGE);
   return missile;
 }

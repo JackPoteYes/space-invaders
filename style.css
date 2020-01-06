@@ -69,9 +69,6 @@ body {
 
 #invadersContainer {
   display: inline-flex;
-  justify-content: center;
-  left: 0;
-  bottom: 0;
 }
 
 #invadersContainer * {
